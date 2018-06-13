@@ -76,7 +76,7 @@ passport.use(new LocalStrategy((username, password, done)=>{
 //------------------------------ end app use
 app.get('/login',(req,res)=>{
     res.render('login',{
-        message: req.body.message
+        message: req.flash('mess')
     })
 })
 app.post('/login',(req,res,next)=>{
@@ -86,8 +86,14 @@ app.post('/login',(req,res,next)=>{
                 return next()
             }
             if (user){
-                req.flash('tn','tin nhan')
-                return res.redirect('dashboard')
+                req.logIn(user,(err)=>{
+                    if (err) return next(err)
+                    return res.redirect('dashboard')
+                })
+            }
+            if (!user){
+                req.flash('mess','Username or password is wrong! Try again')
+                return res.redirect('login');
             }
         })(req,res,next)
     }
@@ -127,6 +133,11 @@ app.route('/register')
             res.redirect('login')           
         }
     }
+})
+app.get('/logout',(req,res)=>{
+    req.logout()
+    console.log(req.user)
+    res.redirect('login');
 })
 app.listen(3000,(err,res)=>{
     if (err) console.log(err)
