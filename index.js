@@ -87,18 +87,20 @@ app.post('/login',(req,res,next)=>{
             }
             if (user){
                 req.flash('tn','tin nhan')
-                return res.redirect('loginOK')
+                return res.redirect('dashboard')
             }
         })(req,res,next)
     }
 )
+app.get('/dashboard',(req,res)=>{
+    res.render('dashboard/index')
+})
 app.route('/loginOK')
 .get((req,res)=>{
     res.render('loginOK',{
         title: 'Login success',
         message: req.flash('tn')
     })
-    console.log('day la req flash ' + req.flash('tn'))
 })
 app.route('/register')
 .get((req,res)=>{
